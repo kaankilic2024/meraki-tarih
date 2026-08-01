@@ -79,6 +79,8 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.6-flash' }}
           SES_TONU: ${{ vars.SES_TONU || 'belgesel' }}
+          SES_MOTORU: ${{ vars.SES_MOTORU || 'gemini' }}
+          GEMINI_SESI: ${{ vars.GEMINI_SESI || 'Aoede' }}
           SFX_TIPI: ${{ vars.SFX_TIPI || 'whoosh' }}
           YOUTUBE_GIZLILIK: ${{ vars.YOUTUBE_GIZLILIK || 'public' }}
           ALTYAZI_YAZI_TIPI: "DejaVu Sans"
