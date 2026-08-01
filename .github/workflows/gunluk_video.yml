@@ -1,0 +1,131 @@
+name: Meraklı Tarih - Günlük Video
+
+on:
+  # Her gün Türkiye saatiyle 11:00 (UTC 08:00)
+  # Not: diğer kanaldan farklı saat seçildi ki API kotası çakışmasın
+  schedule:
+    - cron: "0 8 * * *"
+
+  # Elle de çalıştırabilirsin (Actions sekmesi > Run workflow)
+  workflow_dispatch:
+    inputs:
+      plan:
+        description: "Ne üretilsin?"
+        required: true
+        default: "gunluk"
+        type: choice
+        options:
+          - gunluk        # config.py'deki günlük plan
+          - shorts        # tek dikey video
+          - uzun          # tek yatay video
+      yukle:
+        description: "YouTube'a yüklensin mi?"
+        required: true
+        default: true
+        type: boolean
+
+# Aynı anda iki üretim çalışmasın (kota ve tekrar sorunu olmasın)
+concurrency:
+  group: video-uretimi
+  cancel-in-progress: false
+
+jobs:
+  uret:
+    runs-on: ubuntu-latest
+    timeout-minutes: 330
+
+    permissions:
+      contents: write        # fikir geçmişini geri yazabilmek için
+
+    steps:
+      - name: Depoyu al
+        uses: actions/checkout@v4
+
+      - name: Python kur
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Sistem araçlarını kur
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core fonts-liberation
+          ffmpeg -version | head -1
+
+      - name: Python paketlerini kur
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Gizli bilgileri dosyaya yaz
+        env:
+          TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+          CLIENT_JSON: ${{ secrets.YOUTUBE_CLIENT_SECRET_JSON }}
+        run: |
+          mkdir -p data
+          if [ -n "$TOKEN_JSON" ]; then
+            printf '%s' "$TOKEN_JSON" > data/youtube_token.json
+            echo "YouTube izni hazır."
+          else
+            echo "UYARI: YOUTUBE_TOKEN_JSON tanımlı değil, yükleme yapılamaz."
+          fi
+          if [ -n "$CLIENT_JSON" ]; then
+            printf '%s' "$CLIENT_JSON" > data/client_secret.json
+          fi
+
+      - name: Videoları üret
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.6-flash' }}
+          SES_TONU: ${{ vars.SES_TONU || 'belgesel' }}
+          SFX_TIPI: ${{ vars.SFX_TIPI || 'whoosh' }}
+          YOUTUBE_GIZLILIK: ${{ vars.YOUTUBE_GIZLILIK || 'public' }}
+          ALTYAZI_YAZI_TIPI: "DejaVu Sans"
+        run: |
+          PLAN="${{ github.event.inputs.plan || 'gunluk' }}"
+          YUKLE="${{ github.event.inputs.yukle || 'true' }}"
+
+          BAYRAK=""
+          if [ "$YUKLE" = "true" ]; then
+            BAYRAK="--yukle-otomatik"
+          fi
+
+          if [ "$PLAN" = "gunluk" ]; then
+            python main.py --gunluk $BAYRAK
+          else
+            python main.py --tip "$PLAN" $BAYRAK
+          fi
+
+      - name: Fikir geçmişini kaydet
+        if: always()
+        run: |
+          if git diff --quiet data/fikir_gecmisi.json 2>/dev/null; then
+            echo "Geçmişte değişiklik yok."
+          else
+            git config user.name "video-otomasyonu"
+            git config user.email "actions@github.com"
+            git add data/fikir_gecmisi.json
+            git commit -m "Fikir geçmişi güncellendi [skip ci]"
+            git push
+          fi
+
+      - name: Senaryoları sakla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: senaryolar-${{ github.run_number }}
+          path: |
+            output/*/senaryo_okunabilir.txt
+            output/*/senaryo.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Videoları sakla
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: videolar-${{ github.run_number }}
+          path: output/*/video.mp4
+          retention-days: 5
+          if-no-files-found: ignore
