@@ -118,7 +118,7 @@ VIDEO_TIPLERI = {
 }
 
 # Gunluk uretim plani: kac tane hangi tipte
-GUNLUK_PLAN = {"shorts": 2, "uzun": 2}
+GUNLUK_PLAN = {"shorts": 2, "uzun": 1}
 
 # ---------------------------------------------------------------- DOGRULUK
 # Senaryoda "dunyanin ilk", "tam 3.472 kisi", "12 Mart 1453" gibi kanitlanmasi
@@ -296,7 +296,7 @@ TOKEN_DOSYASI = DATA_DIR / "youtube_token.json"   # otomatik olusur, PAYLASMA
 YOUTUBE_KATEGORI_ID = "27"          # 27 = Education (tarih icin uygun)
 # "public" = herkese acik, "unlisted" = link ile, "private" = sadece sen
 # Ilk haftalarda "private" birakip her videoyu izlemek daha guvenli olur.
-YOUTUBE_GIZLILIK = os.getenv("YOUTUBE_GIZLILIK", "private")   # tarih icerigi -- once kontrol et
+YOUTUBE_GIZLILIK = os.getenv("YOUTUBE_GIZLILIK", "public")   # tarih icerigi -- once kontrol et
 COCUKLAR_ICIN = False                # yetiskin icerigi
 YOUTUBE_DIL = "tr"
 ALTYAZI_YUKLE = True
