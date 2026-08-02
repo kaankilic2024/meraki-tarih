@@ -155,6 +155,10 @@ GEMINI_SES_YEDEK_MODELLER = ["gemini-3.1-flash-tts-preview"]
 
 GEMINI_SESI = os.getenv("GEMINI_SESI", "Aoede")
 
+# Gemini'nin dakikalik istek limitine takilmamak icin sahneler arasi bekleme.
+# Uzun videolarda (20+ sahne) bu olmadan limit doluyor.
+SES_ARASI_BEKLEME = float(os.getenv("SES_ARASI_BEKLEME", "4"))
+
 GEMINI_SES_SECENEKLERI = [
     ("Aoede", "havadar, yumusak"),
     ("Charon", "derin, bilgilendirici"),
@@ -296,7 +300,7 @@ TOKEN_DOSYASI = DATA_DIR / "youtube_token.json"   # otomatik olusur, PAYLASMA
 YOUTUBE_KATEGORI_ID = "27"          # 27 = Education (tarih icin uygun)
 # "public" = herkese acik, "unlisted" = link ile, "private" = sadece sen
 # Ilk haftalarda "private" birakip her videoyu izlemek daha guvenli olur.
-YOUTUBE_GIZLILIK = os.getenv("YOUTUBE_GIZLILIK", "public")   # tarih icerigi -- once kontrol et
+YOUTUBE_GIZLILIK = os.getenv("YOUTUBE_GIZLILIK", "private")   # tarih icerigi -- once kontrol et
 COCUKLAR_ICIN = False                # yetiskin icerigi
 YOUTUBE_DIL = "tr"
 ALTYAZI_YUKLE = True

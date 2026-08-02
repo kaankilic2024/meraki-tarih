@@ -169,7 +169,9 @@ def seslendir_tek(metin: str, hedef_mp3: Path) -> Tuple[bool, str]:
                 if "kota yok" in son_hata:
                     break                       # bu modelde israr etme
                 if deneme < 3:
-                    time.sleep(4 * deneme)
+                    # Hiz limitinde daha uzun bekle: sunucunun sayaci sifirlansin
+                    bekle = 15 * deneme if "hiz limiti" in son_hata else 4 * deneme
+                    time.sleep(bekle)
             except Exception as e:              # noqa: BLE001
                 son_hata = str(e)[:80]
                 ham.unlink(missing_ok=True)

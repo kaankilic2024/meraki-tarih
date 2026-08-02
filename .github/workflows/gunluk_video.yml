@@ -81,6 +81,7 @@ jobs:
           SES_TONU: ${{ vars.SES_TONU || 'belgesel' }}
           SES_MOTORU: ${{ vars.SES_MOTORU || 'gemini' }}
           GEMINI_SESI: ${{ vars.GEMINI_SESI || 'Aoede' }}
+          SES_ARASI_BEKLEME: ${{ vars.SES_ARASI_BEKLEME || '4' }}
           SFX_TIPI: ${{ vars.SFX_TIPI || 'whoosh' }}
           YOUTUBE_GIZLILIK: ${{ vars.YOUTUBE_GIZLILIK || 'public' }}
           ALTYAZI_YAZI_TIPI: "DejaVu Sans"

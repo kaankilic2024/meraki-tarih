@@ -87,19 +87,28 @@ def _uret(metin: str, hedef: Path) -> List[Dict[str, Any]]:
     """Secili motorla seslendirir ve kelime zamanlarini dondurur.
 
     Gemini basarisiz olursa edge-tts'e duser; uretim durmaz.
+    Hicbir motor kelime zamani veremezse zamanlar tahmin edilir; boylece
+    karaoke altyazi hicbir sahnede bos kalmaz.
     """
-    if config.SES_MOTORU == "gemini":
-        from utils import gemini_ses
+    from utils import gemini_ses
 
+    kelimeler: List[Dict[str, Any]] = []
+
+    if config.SES_MOTORU == "gemini":
         ok, bilgi = gemini_ses.seslendir_tek(metin, hedef)
         if ok:
-            sure = _sure_olc(hedef)
-            return gemini_ses.kelime_zamanlari(metin, sure)
-
+            return gemini_ses.kelime_zamanlari(metin, _sure_olc(hedef))
         logger.uyari(f"  Gemini ses basarisiz ({bilgi}). edge-tts deneniyor...")
 
     # edge-tts (varsayilan veya yedek)
-    return _calistir(_seslendir_tek(metin, hedef))
+    kelimeler = _calistir(_seslendir_tek(metin, hedef))
+
+    # edge-tts bazen WordBoundary olayi gondermiyor; o zaman tahmin ediyoruz
+    if not kelimeler:
+        logger.bilgi("    Kelime zamani gelmedi, tahmin ediliyor.")
+        kelimeler = gemini_ses.kelime_zamanlari(metin, _sure_olc(hedef))
+
+    return kelimeler
 
 
 def _calistir(coro):
@@ -324,6 +333,9 @@ def seslendir(proje_dir: Path, senaryo: Dict[str, Any]) -> List[Path]:
                     f"  Sahne {no:2d}: hazir ({sure:.1f} sn, "
                     f"{len(kelimeler)} kelime)"
                 )
+                # Gemini'nin dakikalik istek limitine takilmamak icin ara ver
+                if config.SES_MOTORU == "gemini" and config.SES_ARASI_BEKLEME:
+                    time.sleep(config.SES_ARASI_BEKLEME)
                 break
             except Exception as e:                     # noqa: BLE001
                 if deneme < 3:
