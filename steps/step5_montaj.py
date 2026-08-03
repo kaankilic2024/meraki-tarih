@@ -426,15 +426,36 @@ def videoyu_olustur(proje_dir: Path, senaryo: Dict[str, Any]) -> Path:
 
     # --- 1) Her sahne icin ayri klip
     klipler = []
+    gorsel_dir = proje_dir / "gorseller"
+
+    # Eksik gorsel varsa: tum videoyu iptal etmek yerine en yakin sahnenin
+    # gorselini kullaniyoruz. Bir sahne tekrar etmis olur ama video kurtulur.
+    mevcut_gorseller = {
+        s["no"]: (gorsel_dir / f"sahne_{s['no']:02d}.jpg")
+        for s in sahneler
+        if (gorsel_dir / f"sahne_{s['no']:02d}.jpg").exists()
+    }
+    if not mevcut_gorseller:
+        raise MontajHatasi("Hicbir sahne gorseli yok, video olusturulamaz.")
+
+    def _en_yakin_gorsel(no: int) -> Path:
+        yakin = min(mevcut_gorseller, key=lambda x: (abs(x - no), x))
+        return mevcut_gorseller[yakin].resolve()
+
     for sahne in sahneler:
         no = sahne["no"]
-        gorsel = (proje_dir / "gorseller" / f"sahne_{no:02d}.jpg").resolve()
+        gorsel = (gorsel_dir / f"sahne_{no:02d}.jpg").resolve()
         ses = (proje_dir / "ses" / f"sahne_{no:02d}.mp3").resolve()
 
-        if not gorsel.exists():
-            raise MontajHatasi(f"Sahne {no} gorseli eksik: {gorsel.name}")
         if not ses.exists():
             raise MontajHatasi(f"Sahne {no} sesi eksik: {ses.name}")
+
+        if not gorsel.exists():
+            gorsel = _en_yakin_gorsel(no)
+            logger.uyari(
+                f"  Sahne {no}: gorsel eksik, '{gorsel.name}' kullanilacak."
+            )
+            sahne["_gorsel_eksikti"] = True
 
         # Sureyi senaryo.json'a guvenmek yerine ses dosyasindan olc.
         # Boylece ses yeniden uretilmis veya kayit eskimis olsa da dogru calisir.
