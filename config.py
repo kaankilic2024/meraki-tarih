@@ -300,7 +300,7 @@ TOKEN_DOSYASI = DATA_DIR / "youtube_token.json"   # otomatik olusur, PAYLASMA
 YOUTUBE_KATEGORI_ID = "27"          # 27 = Education (tarih icin uygun)
 # "public" = herkese acik, "unlisted" = link ile, "private" = sadece sen
 # Ilk haftalarda "private" birakip her videoyu izlemek daha guvenli olur.
-YOUTUBE_GIZLILIK = os.getenv("YOUTUBE_GIZLILIK", "public")   # tarih icerigi -- once kontrol et
+YOUTUBE_GIZLILIK = os.getenv("YOUTUBE_GIZLILIK", "public")
 COCUKLAR_ICIN = False                # yetiskin icerigi
 YOUTUBE_DIL = "tr"
 ALTYAZI_YUKLE = True
