@@ -126,10 +126,30 @@ GUNLUK_PLAN = {"shorts": 2, "uzun": 1}
 # kontrol etme ihtiyaci azalir.
 IDDIA_YUMUSAT = True
 
+# ---------------------------------------------------------------- GORSEL
+# Agustos 2026: Pollinations ve Gemini ucretsiz AI gorsel uretimini kapatti.
+# Bu yuzden stok fotograf kaynagina gecildi.
+#   "pexels" -> gercek fotograf (ucretsiz, sinirsiz)
+#   "ai"     -> Pollinations (kredi gerekiyor, POLLINATIONS_TOKEN ile)
+GORSEL_KAYNAGI = os.getenv("GORSEL_KAYNAGI", "pexels")
+
+# https://www.pexels.com/api/ adresinden ucretsiz alinir
+PEXELS_ANAHTARI = os.getenv("PEXELS_ANAHTARI", "")
+PEXELS_SONUC_SAYISI = 15      # kac sonuc arasindan secilsin
+
 # ---------------------------------------------------------------- GORSEL URETIMI
 # Pollinations.ai - API anahtari gerektirmez, ucretsizdir.
 POLLINATIONS_URL = "https://image.pollinations.ai/prompt"
 GORSEL_MODEL = os.getenv("GORSEL_MODEL", "flux")
+
+# Pollinations Agustos 2026'da kredi sistemine gecti. Ucretsiz kullanim icin
+# https://auth.pollinations.ai adresinden token almak gerekiyor.
+POLLINATIONS_TOKEN = os.getenv("POLLINATIONS_TOKEN", "")
+
+# Alternatif gorsel kaynaklari (hangisinin calistigini gormek icin:
+# python kaynak_tara.py)
+HF_TOKEN = os.getenv("HF_TOKEN", "")                    # Hugging Face - AI gorsel
+PIXABAY_ANAHTARI = os.getenv("PIXABAY_ANAHTARI", "")    # stok fotograf
 GORSEL_DENEME = 5           # basarisiz gorsel kac kez tekrar denensin
 GORSEL_BEKLEME = 3          # gorseller arasi bekleme (saniye)
 GORSEL_ZAMAN_ASIMI = 110    # tek gorsel icin en fazla bekleme (saniye)
@@ -248,7 +268,9 @@ ZOOM_ON_OLCEK = 1.3         # titremeyi azaltmak icin gorseli buyutme carpani
 # Her sahne icin ayni seed ile iki gorsel uretilir (ayni yer, farkli poz) ve
 # aralarinda gecis yapilir; karakter hareket ediyormus gibi gorunur.
 # Kapatirsan gorsel uretimi iki kat hizlanir ama video daha donuk olur.
-IKI_KARE = True
+# Stok fotograf modunda ikinci poz anlamsiz (ayni sahnenin farkli pozu
+# arsivde bulunmaz). AI moduna donulurse tekrar acilabilir.
+IKI_KARE = os.getenv("IKI_KARE", "0") == "1"
 POZ_GECIS_SURESI = 0.9      # pozlar arasi gecis suresi (saniye)
 POZ_GECIS_KONUMU = 0.45     # gecis sahnenin neresinde basliyor (0-1)
 

@@ -78,17 +78,21 @@ ANLATIM METNI KURALLARI (Turkce):
 - Cinsel icerik, siddet detayi, iskence tasviri YASAK.
 - Guncel siyaset, dini tartisma, etnik catisma konularina GIRME.
 
-GORSEL PROMPT KURALLARI (Ingilizce yaz):
-- Her sahne icin tek bir durgun goruntu tarif et.
-- Donem dogru olsun: kiyafet, esya, mimari o cagla uyumlu olmali.
-- Modern nesne (telefon, araba, elektrik) ASLA olmasin.
-- STIL KELIMESI YAZMA ("painting", "illustration", "cinematic" vb.).
-  Sistem otomatik ekleyecek.
-- Gercek tarihi kisilerin yuzunu tarif etme; isimsiz insanlar tarif et.
-- Goruntude yazi, harf, rakam olmasin.
-- CESITLILIK: Ardisik sahneler benzemesin; cekim olcegini degistir
-  (wide shot / medium shot / close-up / overhead) ve mekani kaydir.
-- Prompt 20-35 kelime olsun.
+GORSEL KURALLARI (Ingilizce yaz):
+- Gorseller STOK FOTOGRAF arsivinden secilecek, yapay zeka uretmeyecek.
+  Bu yuzden prompt bir TARIF degil, bir ARAMA TERIMI gibi olmali.
+- Somut, fotograflanabilir bir sahne yaz. Soyut kavram yazma.
+    DOGRU : "airplane parked at airport terminal"
+    YANLIS: "the concept of aerodynamic efficiency"
+- Kisa tut: 3-6 kelime yeterli. Uzun cumle arama sonucunu bozar.
+- Ilk kelimeler en onemlisi; asil konuyu basa yaz.
+- Stok arsivde BULUNABILECEK seyler iste: insanlar, hayvanlar, doga,
+  sehirler, nesneler, mekanlar, is ortamlari.
+- Arsivde BULUNMAYACAK seyleri isteme: belirli tarihi olaylar, hayali
+  yaratiklar, cok ozel anlar. Bunlarin yerine temsili bir sahne yaz.
+    Ornek: "Ortacagda uyku" konusu icin -> "candle in dark room"
+- Stil, isik, cekim acisi YAZMA. Arama motoru bunlari anlamaz.
+- Ardisik sahnelerde FARKLI nesneler/mekanlar iste; ayni terimi tekrarlama.
 
 Cevabini SADECE su JSON formatinda ver, baska hicbir sey yazma:
 {{
@@ -101,7 +105,7 @@ Cevabini SADECE su JSON formatinda ver, baska hicbir sey yazma:
       "no": 1,
       "anlatim": "Bu sahnede seslendirilecek Turkce metin",
       "karakter_sahnede": false,
-      "gorsel_prompt": "English: period-accurate scene, setting, light, composition"
+      "gorsel_prompt": "English search term, 3-6 words, concrete photographable subject"
     }}
   ]
 }}"""
@@ -357,6 +361,9 @@ def senaryo_uret(fikir: Dict[str, Any]) -> Dict[str, Any]:
         poz_2 = str(sahne.get("poz_2", "")).strip().rstrip(".,")
 
         def tam_prompt(poz: str) -> str:
+            # Stok fotograf modunda stil/kompozisyon eki arama sonucunu bozar
+            if config.GORSEL_KAYNAGI == "pexels":
+                return prompt
             p = prompt
             if karakter and karakter_var:
                 bas = f"{karakter}, consistent character design"

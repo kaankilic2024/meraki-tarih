@@ -28,6 +28,19 @@ class GorselHatasi(Exception):
     pass
 
 
+def _pexels_indir(sahne, hedef: Path, dikey: bool, kullanilanlar: set) -> str:
+    """Pexels'ten fotograf indirir. Fotografci adini dondurur."""
+    from utils import pexels_kaynak
+
+    url, terim, fotografci = pexels_kaynak.gorsel_url_bul(
+        sahne["gorsel_prompt"], dikey, kullanilanlar
+    )
+    _indir(url, hedef)
+    sahne["_arama_terimi"] = terim
+    sahne["_fotografci"] = fotografci
+    return fotografci
+
+
 def _url_olustur(prompt: str, genislik: int, yukseklik: int, seed: int) -> str:
     kodlu = urllib.parse.quote(prompt[:1800], safe="")
     parametreler = urllib.parse.urlencode({
@@ -81,7 +94,14 @@ def _gorsel_gecerli_mi(yol: Path, min_kb: int = 15) -> bool:
 def _indir(url: str, hedef: Path) -> None:
     import requests
 
-    cevap = requests.get(url, timeout=config.GORSEL_ZAMAN_ASIMI, stream=True)
+    basliklar = {}
+    if getattr(config, "POLLINATIONS_TOKEN", ""):
+        basliklar["Authorization"] = f"Bearer {config.POLLINATIONS_TOKEN}"
+
+    cevap = requests.get(
+        url, headers=basliklar,
+        timeout=config.GORSEL_ZAMAN_ASIMI, stream=True,
+    )
     if cevap.status_code != 200:
         raise GorselHatasi(f"HTTP {cevap.status_code}: {cevap.text[:200]}")
 
@@ -137,6 +157,7 @@ def gorselleri_uret(
     logger.bilgi("Bu adim uzun surebilir; her gorsel 10-30 saniye alabilir.")
 
     yollar, basarisiz = [], []
+    kullanilanlar = set()      # ayni foto tekrar etmesin
 
     # Her sahne icin (dosya_soneki, prompt_alani) ciftleri
     for sahne in sahneler:
@@ -147,7 +168,7 @@ def gorselleri_uret(
         for sonek, alan in isler:
             _tek_gorsel(
                 sahne, sonek, alan, gorsel_dir, genislik, yukseklik,
-                seed, yeniden, yollar, basarisiz,
+                seed, yeniden, yollar, basarisiz, kullanilanlar,
             )
 
     if basarisiz:
@@ -164,7 +185,7 @@ def gorselleri_uret(
 
 
 def _tek_gorsel(sahne, sonek, alan, gorsel_dir, genislik, yukseklik,
-                seed, yeniden, yollar, basarisiz) -> None:
+                seed, yeniden, yollar, basarisiz, kullanilanlar) -> None:
     """Tek bir gorseli uretir. sonek='' ana kare, sonek='b' ikinci poz."""
     no = sahne["no"]
     hedef = gorsel_dir / f"sahne_{no:02d}{sonek}.jpg"
@@ -183,15 +204,25 @@ def _tek_gorsel(sahne, sonek, alan, gorsel_dir, genislik, yukseklik,
     sahne_seed = _sahne_seed(seed, no, tazele)
     if yeniden:
         sahne["_tazeleme"] = tazele
-    url = _url_olustur(sahne[alan], genislik, yukseklik, sahne_seed)
+
+    pexels_modu = config.GORSEL_KAYNAGI == "pexels"
+    if not pexels_modu:
+        url = _url_olustur(sahne[alan], genislik, yukseklik, sahne_seed)
 
     for deneme in range(1, config.GORSEL_DENEME + 1):
         try:
             basla = time.time()
-            _indir(url, hedef)
+            if pexels_modu:
+                fotografci = _pexels_indir(
+                    sahne, hedef, yukseklik > genislik, kullanilanlar
+                )
+                ek = f", {fotografci}" if fotografci else ""
+            else:
+                _indir(url, hedef)
+                ek = ""
             sure = time.time() - basla
             kb = hedef.stat().st_size // 1024
-            logger.ok(f"  {etiket}: hazir ({kb} KB, {sure:.0f} sn)")
+            logger.ok(f"  {etiket}: hazir ({kb} KB, {sure:.0f} sn{ek})")
             yollar.append(hedef)
             sahne["gorsel" + sonek] = hedef.name
             break
