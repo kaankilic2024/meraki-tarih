@@ -71,12 +71,36 @@ ANLATIM METNI KURALLARI (Turkce):
 - Ders verir gibi degil; ilginc bir sey anlatan bir arkadas gibi.
 - Kisa ve orta uzunlukta cumleler karisik kullan; monoton olmasin.
 - Agir akademik dil kullanma, ama basitlestirip yanlis da anlatma.
-- Ilk sahne ilk 5 saniyede merak uyandirmali: sasirtici bir bilgi veya
-  izleyicinin kendini kiyaslayacagi bir soru.
-- Son sahne konuyu toparlamali ve dogal bir kapanis yapmali.
-- Kapanista abone olmayi hatirlatabilirsin ama zorlama olmasin.
 - Cinsel icerik, siddet detayi, iskence tasviri YASAK.
 - Guncel siyaset, dini tartisma, etnik catisma konularina GIRME.
+
+ILK SAHNE -- EN KRITIK KISIM:
+Izleyicilerin cogu ilk 3 saniyede kaydirip geciyor. Ilk sahne bunu engellemeli.
+- Ilk cumle EN FAZLA 10 KELIME olsun. Kisa, vurucu, net.
+- Selamlama YAPMA. "Merhaba", "hos geldiniz", "bugun sizlerle" YASAK.
+- Aciklama ile baslama. Once carpici iddiayi at, aciklamayi sonra yap.
+- Su uc kalıptan birini kullan:
+    (a) Sasirtici iddia:  "Ortacagda kimse sabaha kadar uyumazdi."
+    (b) Izleyiciyi icine alan soru:  "Gece uyanip bir daha uyuyamiyor musun?"
+    (c) Beklentiyi bozma:  "Sekiz saatlik uyku sandigindan cok daha yeni."
+- MERAK BOSLUGU BIRAK: cevabin varligini duyur ama cevabi verme.
+    YANLIS: "Ortacagda insanlar iki kez uyurdu cunku elektrik yoktu."
+    DOGRU : "Ortacagda gece ikiye bolunurdu. Sebebi cok mantikli."
+- Ikinci sahnede de cevabi tam verme; once konunun ilginc yanini derinlestir.
+
+SABIT FORMAT KIMLIGI:
+Izleyicinin kanali tanimasi icin her video benzer bir tonda olmali.
+- Anlatimda bir yerde "gecmiste", "o donemde", "eskiden" gibi zaman capasi
+  gecsin; izleyici hangi kanalda oldugunu hissetsin.
+- Kapanista kanalin ne yaptigini bir kez hatirlat (tarihin bilinmeyen tarafi).
+
+SON SAHNE -- ABONE CAGRISI:
+- Once konuyu tek cumleyle topla.
+- Sonra abone olmak icin SOMUT bir sebep sun. Sadece "abone ol" deme.
+    DOGRU : "Her gun tarihten boyle bir detay paylasiyoruz. Abone ol."
+    DOGRU : "Gecmisin bilinmeyen tarafi icin takipte kal."
+    YANLIS: "Abone olmayi ve begenmeyi unutmayin."   (herkes bunu diyor, etkisiz)
+- Kisa tut. Kapanis 12 kelimeyi gecmesin.
 
 GORSEL KURALLARI (Ingilizce yaz):
 - Gorseller STOK FOTOGRAF arsivinden secilecek, yapay zeka uretmeyecek.
@@ -93,6 +117,19 @@ GORSEL KURALLARI (Ingilizce yaz):
     Ornek: "Ortacagda uyku" konusu icin -> "candle in dark room"
 - Stil, isik, cekim acisi YAZMA. Arama motoru bunlari anlamaz.
 - Ardisik sahnelerde FARKLI nesneler/mekanlar iste; ayni terimi tekrarlama.
+
+BASLIK KURALLARI (cok onemli -- tiklanmayi bu belirliyor):
+- Merak boslugu yarat: konuyu belli et ama cevabi verme.
+    YANLIS: "Ucaklar Beyazdir Cunku Isigi Yansitir"   (cevap baslikta, tiklama gerekmez)
+    DOGRU : "Ucaklarin Beyaz Olmasinin Gercek Sebebi"
+- Su kaliplar iyi calisir:
+    "... Olmasinin Gercek Sebebi"
+    "Kimse ...  Fark Etmiyor"
+    "... Sandigin Gibi Degil"
+    "Neden ...? Cevap Sasirtici"
+- 45-60 karakter arasi tut. Telefonda uzun basliklar kesiliyor.
+- BUYUK HARFLE BAGIRMA, asiri emoji kullanma. En fazla bir emoji.
+- Clickbait yapma: baslikta soyledigin sey videoda gercekten olmali.
 
 Cevabini SADECE su JSON formatinda ver, baska hicbir sey yazma:
 {{
@@ -125,7 +162,7 @@ Her sahnenin anlatim metni: {kelime_min}-{kelime_max} kelime
 Simdi senaryoyu yaz."""
 
 MOCK_SENARYO = {
-    "baslik": "Ortaçağda İnsanlar Neden İki Kez Uyurdu?",
+    "baslik": "Sekiz Saatlik Uyku Sandığından Çok Daha Yeni",
     "aciklama": "Elektrikten önce gece ikiye bölünürdü. İnsanlar birinci uykudan "
                 "sonra saatlerce uyanık kalır, sonra ikinci uykuya dalardı. "
                 "Peki bu alışkanlık neden kayboldu?\n\n"
@@ -136,8 +173,7 @@ MOCK_SENARYO = {
     "karakter_sayfasi": "",
     "sahneler": [
         {"no": 1, "karakter_sahnede": False,
-         "anlatim": "Gece yarısı uyanıp bir daha uyuyamadığınız oldu mu? "
-                    "Belki de vücudunuz aslında doğru olanı yapıyor.",
+         "anlatim": "Ortaçağda kimse sabaha kadar uyumazdı.",
          "gorsel_prompt": "a dark medieval bedroom lit only by moonlight through "
                           "a small window, empty wooden bed with rough blankets, "
                           "quiet atmosphere, wide shot"},
@@ -164,8 +200,8 @@ MOCK_SENARYO = {
          "gorsel_prompt": "peaceful medieval bedroom before dawn, faint blue "
                           "light entering, blankets in soft folds, overhead shot"},
         {"no": 6, "karakter_sahnede": False,
-         "anlatim": "Sanayi devrimiyle yapay ışık geldi, geceler kısaldı ve bu "
-                    "alışkanlık unutuldu. Daha fazlası için kanala göz atın.",
+         "anlatim": "Sanayi devrimiyle yapay ışık geldi ve bu alışkanlık unutuldu. "
+                    "Geçmişin bilinmeyen tarafı için abone ol.",
          "gorsel_prompt": "a 19th century factory street at night lit by gas "
                           "lamps, people walking, industrial buildings, "
                           "atmospheric wide shot"},
@@ -208,6 +244,60 @@ def _benzerlik_kontrol(hamlar: List[tuple]) -> List[str]:
             nolar = "-".join(str(n) for n, _ in ucler)
             uyarilar.append(f"sahne {nolar} (hepsinde '{sorted(ortak)[0]}' var)")
     return uyarilar
+
+
+
+# Ilk sahnede olmamasi gerekenler: izleyiciyi kaydirtan kaliplar
+ZAYIF_ACILIS = [
+    r"^merhaba", r"^selam", r"^hos ?geldin", r"^bugun sizlerle",
+    r"^bu videoda", r"^herkese merhaba", r"^sevgili", r"^degerli",
+    r"^kanalimiza", r"^videomuza",
+]
+
+# Kapanista etkisiz kalip
+ZAYIF_KAPANIS = [
+    r"abone olmayi ve begenmeyi unutmayin",
+    r"begenmeyi ve abone olmayi unutmayin",
+    r"kanalimiza abone olmayi unutmayin",
+]
+
+
+def _acilis_kontrol(sahneler: List[Dict[str, Any]]) -> List[str]:
+    """Ilk sahnenin izleyiciyi tutacak guclukte olup olmadigini kontrol eder.
+
+    Izleyicilerin cogu ilk 3 saniyede karar veriyor; zayif bir acilis
+    videonun izlenme suresini dogrudan dusuruyor.
+    """
+    if not sahneler:
+        return []
+
+    uyarilar = []
+    ilk = sahneler[0]["anlatim"].strip()
+    sade = ilk.lower().translate(_SAPKA)
+
+    for kalip in ZAYIF_ACILIS:
+        if re.search(kalip, sade):
+            uyarilar.append(f"zayif acilis: '{ilk[:35]}...'")
+            break
+
+    # Ilk cumle cok uzunsa vurucu degildir
+    ilk_cumle = re.split(r"(?<=[.!?])\s", ilk)[0]
+    kelime = len(ilk_cumle.split())
+    if kelime > 13:
+        uyarilar.append(f"ilk cumle cok uzun ({kelime} kelime, hedef 10)")
+
+    return uyarilar
+
+
+def _kapanis_kontrol(sahneler: List[Dict[str, Any]]) -> List[str]:
+    """Kapanista somut bir abone sebebi var mi?"""
+    if not sahneler:
+        return []
+    son = sahneler[-1]["anlatim"].lower().translate(_SAPKA)
+    for kalip in ZAYIF_KAPANIS:
+        if re.search(kalip, son):
+            return ["kapanis etkisiz kalip kullaniyor"]
+    return []
 
 
 def _risk_kontrol(senaryo: Dict[str, Any]) -> List[str]:
@@ -410,6 +500,13 @@ def senaryo_uret(fikir: Dict[str, Any]) -> Dict[str, Any]:
     # Riskli iddialari otomatik yumusat (elle kontrol yukunu azaltir)
     from utils import iddia
     iddia.yumusat(senaryo)
+
+    # Acilis ve kapanis gucu -- izlenme suresini en cok bunlar etkiliyor
+    zayif = _acilis_kontrol(temiz_sahneler) + _kapanis_kontrol(temiz_sahneler)
+    if zayif:
+        for z in zayif:
+            logger.uyari(f"IZLENME RISKI -> {z}")
+        senaryo["_acilis_uyarisi"] = zayif
 
     # Yumusatmadan SONRA kalan kesin iddialari bildir
     kesin = _kesinlik_kontrol(temiz_sahneler)
