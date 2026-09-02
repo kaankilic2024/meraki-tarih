@@ -118,7 +118,7 @@ VIDEO_TIPLERI = {
 }
 
 # Gunluk uretim plani: kac tane hangi tipte
-GUNLUK_PLAN = {"shorts": 2, "uzun": 1}
+GUNLUK_PLAN = {"shorts": 3, "uzun": 0}
 
 # ---------------------------------------------------------------- DOGRULUK
 # Senaryoda "dunyanin ilk", "tam 3.472 kisi", "12 Mart 1453" gibi kanitlanmasi
